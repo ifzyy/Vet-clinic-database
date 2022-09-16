@@ -1,7 +1,7 @@
 /* Database schema to keep the structure of entire database. */
 CREATE TABLE animals(
     id integer PRIMARY KEY,
-    name TEXT,
+    name VARCHAR,
     date_of_birth date,
     escape_attempts integer,
     neutered boolean,
@@ -22,3 +22,5 @@ CREATE TABLE species(
 );
 ALTER TABLE animals ADD COLUMN species_id INT, ADD FOREIGN KEY (species_id) REFERENCES species(id) ON DELETE CASCADE;
 ALTER TABLE animals ADD COLUMN owner_id INT, ADD FOREIGN KEY (owner_id) REFERENCES owners(id) ON DELETE CASCADE;
+
+ALTER TABLE animals ALTER COLUMN name TYPE VARCHAR;
