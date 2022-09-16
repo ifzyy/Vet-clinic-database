@@ -98,3 +98,56 @@ SELECT owners.full_name AS owner, COUNT(animals.name) AS animal_count FROM anima
 JOIN owners ON owners.id = animals.owner_id
 GROUP BY owner
 ORDER BY animal_count DESC LIMIT 1;
+
+-- QUERIES (4)
+-- Who was the last animal seen by William Tatcher?
+SELECT * FROM visits
+WHERE vet = 'William Tatcher'
+ORDER BY date_visited DESC LIMIT 1;
+
+-- How many different animals did Stephanie Mendez see?
+SELECT vet, COUNT(animal) FROM visits
+GROUP BY vet
+HAVING vet = 'Stephanie Mendez';
+
+-- List all vets and their specialties, including vets with no specialties.
+SELECT vets.name, specializations.specie FROM vets
+LEFT JOIN specializations ON specializations.vet = vets.name;
+
+-- List all animals that visited Stephanie Mendez between April 1st and August 30th, 2020.
+SELECT * FROM visits
+WHERE vet = 'Stephanie Mendez' AND (date_visited BETWEEN '2020-04-01' AND '2020-08-30');
+
+-- What animal has the most visits to vets?
+SELECT animal, COUNT(date_visited) FROM visits
+GROUP BY animal
+ORDER BY COUNT(date_visited) DESC limit 1;
+
+-- Who was Maisy Smith's first visit?
+SELECT visits.animal from visits
+WHERE vet = 'Maisy Smith' 
+ORDER BY date_visited LIMIT 1;
+
+-- Details for most recent visit: animal information, vet information, and date of visit.
+SELECT '' as animal_info, animals.*, '' as vet_info, vets.*, date_visited FROM visits
+JOIN animals ON animals.name = visits.animal
+JOIN vets ON vets.name = visits.vet 
+ORDER BY date_visited DESC LIMIT 1;
+
+-- How many visits were with a vet that did not specialize in that animal's species?
+SELECT COUNT(*) as visit_count FROM visits
+WHERE visits.vet = (
+  SELECT vets.name as VETS_NAME FROM vets -- vets without specializations
+  LEFT JOIN specializations ON specializations.vet = vets.name
+  WHERE specie IS NULL
+);
+
+-- What specialty should Maisy Smith consider getting? Look for the species she gets the most.
+SELECT animals.name as highest_visiting_animal, species.name as specie FROM animals
+JOIN species ON species.id = animals.species_id
+WHERE animals.name = (
+  SELECT animal as highest_visiting_animal FROM visits -- Maisy's highest visiting animal
+  WHERE vet = 'Maisy Smith'
+  GROUP BY animal
+  ORDER BY COUNT(*) DESC LIMIT 1
+);

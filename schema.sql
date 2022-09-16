@@ -26,3 +26,21 @@ ALTER TABLE animals ADD COLUMN owner_id INT, ADD FOREIGN KEY (owner_id) REFERENC
 ALTER TABLE animals ALTER COLUMN name TYPE VARCHAR;
 ALTER TABLE owners ALTER COLUMN full_name TYPE VARCHAR;
 ALTER TABLE species ALTER COLUMN name TYPE VARCHAR;
+
+CREATE TABLE vets(
+ id INT GENERATED ALWAYS AS IDENTIY,
+ name TEXT,
+ age INT,
+ date_of_graduation DATE
+);
+
+CREATE TABLE specializations(
+ vet TEXT,
+ specie TEXT
+);
+
+CREATE TABLE visits(
+ vet TEXT,
+ animal TEXT,
+ date_visited DATE
+);
